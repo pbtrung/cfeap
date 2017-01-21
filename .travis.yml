@@ -1,0 +1,56 @@
+sudo: required
+dist: trusty
+
+# Enable C support
+language: c
+
+matrix:
+  include:
+    - os: linux
+      compiler: clang-3.8
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+            - libopenblas-dev
+    - os: linux
+      compiler: clang-3.9
+      addons:
+        apt:
+          sources:
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main'
+              key_url:    'http://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - clang-3.9
+            - libopenblas-dev
+    - os: linux
+      compiler: gcc-5
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - libopenblas-dev
+    - os: linux
+      compiler: gcc-6
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - libopenblas-dev
+
+# Build steps
+script:
+  - cd build
+  - mkdir debug
+  - mkdir release
+  - cd debug && cmake -DCMAKE_BUILD_TYPE=Debug ../.. && make
+  - cd ../release && cmake -DCMAKE_BUILD_TYPE=Release ../.. && make
+  - cd ../../bin/release
+  - ./cfeap --help
+  - ./test-cfeap

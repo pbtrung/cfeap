@@ -1,0 +1,9 @@
+# CodeDocs.xyz Configuration File
+
+# One or more directories and files to exclude from documentation generation.
+# Use relative paths with respect to the repository root directory.
+EXCLUDE = include/argtable3.h include/bstrlib.h include/yaml \
+          src/argtable3.c src/bstrlib.c src/yaml
+
+# Include the Doxygen configuration from another file.
+DOXYFILE = doxygen.cfg
