@@ -52,5 +52,5 @@ script:
   - cd debug && cmake -DCMAKE_BUILD_TYPE=Debug ../.. && make -j4
   - cd ../release && cmake -DCMAKE_BUILD_TYPE=Release ../.. && make -j4
   - cd ../../bin/release
-  - ./cfeap
+  - ./cfeap --help
   - ./test-cfeap
