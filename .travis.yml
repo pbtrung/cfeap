@@ -8,25 +8,29 @@ matrix:
   include:
     - os: linux
       compiler: clang-3.8
+      env: CXX_COMPILER="clang++-3.8" C_COMPILER="clang-3.8"
       addons:
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.8 main"
+              key_url:    "http://apt.llvm.org/llvm-snapshot.gpg.key"
           packages:
             - clang-3.8
             - libopenblas-dev
     - os: linux
       compiler: clang-3.9
+      env: CXX_COMPILER="clang++-3.9" C_COMPILER="clang-3.9"
       addons:
         apt:
           sources:
-            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main'
-              key_url:    'http://apt.llvm.org/llvm-snapshot.gpg.key'
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url:    "http://apt.llvm.org/llvm-snapshot.gpg.key"
           packages:
             - clang-3.9
             - libopenblas-dev
     - os: linux
       compiler: gcc-5
+      env: CXX_COMPILER="g++-5" C_COMPILER="gcc-5"
       addons:
         apt:
           sources:
@@ -36,6 +40,7 @@ matrix:
             - libopenblas-dev
     - os: linux
       compiler: gcc-6
+      env: CXX_COMPILER="g++-6" C_COMPILER="gcc-6"
       addons:
         apt:
           sources:
@@ -49,6 +54,8 @@ script:
   - cd build
   - mkdir debug
   - mkdir release
+  - export CXX="$CXX_COMPILER"
+  - export CC="$C_COMPILER"
   - cd debug && cmake -DCMAKE_BUILD_TYPE=Debug ../.. && make -j4
   - cd ../release && cmake -DCMAKE_BUILD_TYPE=Release ../.. && make -j4
   - cd ../../bin/release
