@@ -31,6 +31,7 @@
  ***************************************************************************/
 
 #include "test-cargs.h"
+#include "test-yaml.h"
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +39,9 @@ int main(int argc, char *argv[])
 
     sput_enter_suite("test_cargs()");
     sput_run_test(test_cargs);
+    
+    sput_enter_suite("test_yaml()");
+    sput_run_test(test_yaml);
 
     sput_finish_testing();
 
