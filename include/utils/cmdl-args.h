@@ -30,14 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    *           
  ***************************************************************************/
 
-#include "cfeap.h"
 
-int cfeap_init(int argc, char *argv[], bstring *input_fn,
-               bstring *output_fn, bstring *log_fn)
-{
-    int rc = 0;
-    
-    rc = cargs_parse(argc, argv, output_fn, output_fn, log_fn);
-    
-    return rc;
-}
+#ifndef __CMDL_ARGS_H__
+#define __CMDL_ARGS_H__
+
+#include "cfeap-cfg.h"
+#include "utils/argtable3.h"
+#include "utils/bstrlib.h"
+
+int cargs_parse(int argc, char *argv[], bstring *input_fn,
+                bstring *output_fn, bstring *log_fn);
+
+#endif //__CMDL_ARGS_H__

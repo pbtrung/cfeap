@@ -30,6 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    *           
  ***************************************************************************/
 
+#include "test-cargs.h"
+
 int main(int argc, char *argv[])
 {
+    sput_start_testing();
+
+    sput_enter_suite("test_cargs()");
+    sput_run_test(test_cargs);
+
+    sput_finish_testing();
+
+    return sput_get_return_value();
 }

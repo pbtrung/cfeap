@@ -30,6 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    *           
  ***************************************************************************/
 
+#include "cfeap.h"
+
 int main(int argc, char **argv) 
 {
+    int rc = 0;
+    bstring input_fn = NULL, output_fn = NULL, log_fn = NULL;
+    rc = cfeap_init(argc, argv, &input_fn, &output_fn, &log_fn);
+    
+    return rc;
 }

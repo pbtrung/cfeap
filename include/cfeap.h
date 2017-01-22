@@ -29,3 +29,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE   *   
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    *           
  ***************************************************************************/
+
+#ifndef __CFEAP_H__
+#define __CFEAP_H__
+
+#include "utils/cmdl-args.h"
+#include "utils/bstrlib.h"
+
+int cfeap_init(int argc, char *argv[], bstring *input_fn,
+               bstring *output_fn, bstring *log_fn);
+
+#endif //__CFEAP_H__

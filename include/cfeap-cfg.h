@@ -45,4 +45,10 @@
  */
 #define CFEAP_VERSION "version 0.999999"
 
+/**
+ * @def        PROGRAM_NAME
+ * Automatically generated program name.
+ */
+#define PROGRAM_NAME "cfeap"
+
 #endif //__CFEAP_CFG_H__

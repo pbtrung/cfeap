@@ -30,14 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    *           
  ***************************************************************************/
 
-#include "cfeap.h"
+#include "sput.h"
+#include "utils/cmdl-args.h"
 
-int cfeap_init(int argc, char *argv[], bstring *input_fn,
-               bstring *output_fn, bstring *log_fn)
+static void test_cargs();
+static void test_cargs_case_a();
+//static void test_cargs_case_b();
+//static void test_cargs_case_c();
+
+static void test_cargs()
 {
-    int rc = 0;
-    
-    rc = cargs_parse(argc, argv, output_fn, output_fn, log_fn);
-    
-    return rc;
+    test_cargs_case_a();
+    //test_cargs_case_b();
+    //test_cargs_case_c();
+}
+
+static void test_cargs_case_a()
+{
+    int argc = 3;
+    char *argv[] = {"cfeap", "-i", "input.txt"};
+    bstring input_fn = NULL, output_fn = NULL, log_fn = NULL;
+
+    cargs_parse(argc, argv, &input_fn, &output_fn, &log_fn);
+    bstring tmp = bfromcstr(argv[2]);
+    sput_fail_if(biseq(input_fn, tmp) != 1, "Case a: Input file name");
+    bassigncstr(tmp, "cfeap-output.txt");
+    sput_fail_if(biseq(output_fn, tmp) != 1, "Case a: Output file name");
+    bassigncstr(tmp, "cfeap-log.txt");
+    sput_fail_if(biseq(log_fn, tmp) != 1, "Case a: Log file name");
+
+    bdestroy(input_fn);
+    bdestroy(output_fn);
+    bdestroy(log_fn);
+    bdestroy(tmp);
 }
