@@ -35,14 +35,14 @@
 
 static void test_cargs();
 static void test_cargs_case_a();
-//static void test_cargs_case_b();
-//static void test_cargs_case_c();
+static void test_cargs_case_b();
+static void test_cargs_case_c();
 
 static void test_cargs()
 {
     test_cargs_case_a();
-    //test_cargs_case_b();
-    //test_cargs_case_c();
+    test_cargs_case_b();
+    test_cargs_case_c();
 }
 
 static void test_cargs_case_a()
@@ -58,6 +58,46 @@ static void test_cargs_case_a()
     sput_fail_if(biseq(output_fn, tmp) != 1, "Case a: Output file name");
     bassigncstr(tmp, "cfeap-log.txt");
     sput_fail_if(biseq(log_fn, tmp) != 1, "Case a: Log file name");
+
+    bdestroy(input_fn);
+    bdestroy(output_fn);
+    bdestroy(log_fn);
+    bdestroy(tmp);
+}
+
+static void test_cargs_case_b()
+{
+    int argc = 5;
+    char *argv[] = {"cfeap", "-i", "input.txt", "-o", "output.txt"};
+    bstring input_fn = NULL, output_fn = NULL, log_fn = NULL;
+
+    cargs_parse(argc, argv, &input_fn, &output_fn, &log_fn);
+    bstring tmp = bfromcstr(argv[2]);
+    sput_fail_if(biseq(input_fn, tmp) != 1, "Case b: Input file name");
+    bassigncstr(tmp, argv[4]);
+    sput_fail_if(biseq(output_fn, tmp) != 1, "Case b: Output file name");
+    bassigncstr(tmp, "cfeap-log.txt");
+    sput_fail_if(biseq(log_fn, tmp) != 1, "Case b: Log file name");
+
+    bdestroy(input_fn);
+    bdestroy(output_fn);
+    bdestroy(log_fn);
+    bdestroy(tmp);
+}
+
+static void test_cargs_case_c()
+{
+    int argc = 7;
+    char *argv[] = {"cfeap", "-i", "input.txt", "-o", "output.txt", "-l", "log.txt"};
+    bstring input_fn = NULL, output_fn = NULL, log_fn = NULL;
+
+    cargs_parse(argc, argv, &input_fn, &output_fn, &log_fn);
+    bstring tmp = bfromcstr(argv[2]);
+    sput_fail_if(biseq(input_fn, tmp) != 1, "Case c: Input file name");
+    bassigncstr(tmp, argv[4]);
+    sput_fail_if(biseq(output_fn, tmp) != 1, "Case c: Output file name");
+    bassigncstr(tmp, argv[6]);
+    sput_fail_if(biseq(log_fn, tmp) != 1, "Case c: Log file name");
 
     bdestroy(input_fn);
     bdestroy(output_fn);
