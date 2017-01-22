@@ -32,9 +32,9 @@
 
 #include "utils/cmdl-args.h"
 
-static int cargs_print_help(void *argtable[]);
+static int cargs_print_help(void *argtable[], struct arg_lit *help);
 
-static int cargs_print_version(void *argtable[]);
+static int cargs_print_version(struct arg_lit *version);
 
 static int cargs_print_error(struct arg_end *end);
 
@@ -52,8 +52,8 @@ int cargs_parse(int argc, char *argv[], bstring *input_fn,
     struct arg_end *end;
 
     void *argtable[] = {
-        help          = arg_litn("h", "help", 0, 1, "display this help and exit"),
-        version       = arg_litn("v", "version", 0, 1, "display version info and exit"),
+        help          = arg_litn("h", "help", 0, 100, "display this help and exit"),
+        version       = arg_litn("v", "version", 0, 100, "display version info and exit"),
         arg_input_fn  = arg_filen("i", "input", "input_file", 1, 1, "input file (required)"),
         arg_output_fn = arg_filen("o", "output", "output_file", 0, 1, "output file (optional)"),
         arg_log_fn    = arg_filen("l", "log", "log_file", 0, 1, "log file (optional)"),
@@ -66,12 +66,12 @@ int cargs_parse(int argc, char *argv[], bstring *input_fn,
     nerrors = arg_parse(argc, argv, argtable);
 
     // special case: help and version take precedence over error reporting
-    if(help->count == 1) {
-        rc = cargs_print_help(argtable);
+    if(help->count >= 1) {
+        rc = cargs_print_help(argtable, help);
         goto exit;
     }
-    if(version->count == 1) {
-        rc = cargs_print_version(argtable);
+    if(version->count >= 1) {
+        rc = cargs_print_version(version);
         goto exit;
     }
     
@@ -89,28 +89,38 @@ int cargs_parse(int argc, char *argv[], bstring *input_fn,
     return rc;
 }
 
-static int cargs_print_help(void *argtable[])
+static int cargs_print_help(void *argtable[], struct arg_lit *help)
 {
     int rc = 0;
 
-    printf("Usage: %s", PROGRAM_NAME);
-    arg_print_syntax(stdout, argtable, "\n");
-    printf("C Finite Element Analysis Program (CFEAP).\n\n");
-    arg_print_glossary(stdout, argtable, "  %-25s %s\n");
-    printf("\n");
+    if(help->count == 1) {
+        printf("Usage: %s", PROGRAM_NAME);
+        arg_print_syntax(stdout, argtable, "\n");
+        printf("C Finite Element Analysis Program (CFEAP).\n\n");
+        arg_print_glossary(stdout, argtable, "  %-25s %s\n");
+        printf("\n");
+    } else {
+        printf("%s: excess option -h|--help\n", PROGRAM_NAME);
+        printf("Try '%s --help' for more information.\n\n", PROGRAM_NAME);
+    }
 
     return rc;
 }
 
-static int cargs_print_version(void *argtable[])
+static int cargs_print_version(struct arg_lit *version)
 {
     int rc = 0;
     
-    printf("%s %s\n", PROGRAM_NAME, CFEAP_VERSION);
-    printf("C Finite Element Analysis Program (CFEAP).\n");
-    printf("Copyright (C) 2017 Trung Pham <me@trungbpham.com>\n");
-    printf("This is free software; see the source for copying conditions. There is NO\n");
-    printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n");
+    if(version->count == 1) {
+        printf("%s %s\n", PROGRAM_NAME, CFEAP_VERSION);
+        printf("C Finite Element Analysis Program (CFEAP).\n");
+        printf("Copyright (C) 2017 Trung Pham <me@trungbpham.com>\n");
+        printf("This is free software; see the source for copying conditions. There is NO\n");
+        printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n");
+    } else {
+        printf("%s: excess option -v|--version\n", PROGRAM_NAME);
+        printf("Try '%s --help' for more information.\n\n", PROGRAM_NAME);
+    }
         
     return rc;
 }
