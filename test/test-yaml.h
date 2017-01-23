@@ -140,20 +140,17 @@ static void test_yaml_case_b()
 
 static void print_yaml_document(yaml_document_t *document)
 {
-    puts("NEW DOCUMENT");
-
     print_yaml_node(document, yaml_document_get_root_node(document));
-
-    puts("END DOCUMENT");
 }
 
 void print_yaml_node(yaml_document_t *document, yaml_node_t *node)
 {
     char *node_value;
-    yaml_node_t *material;
     yaml_node_t *next_node_p;
+    int count = 0;
+    int expected_count = 1;
 
-    switch (node->type) {
+    switch(node->type) {
         case YAML_NO_NODE:
             break;
         case YAML_SCALAR_NODE:
@@ -167,8 +164,7 @@ void print_yaml_node(yaml_document_t *document, yaml_node_t *node)
                 if(next_node_p) {
                     node_value = (char *)next_node_p->data.scalar.value;
                     if(!strcmp(node_value, "material")) {
-                        printf("material\n");
-                        material = next_node_p;
+                        count += 1;
                     }
                 }
             }
@@ -177,4 +173,6 @@ void print_yaml_node(yaml_document_t *document, yaml_node_t *node)
             fputs("Unknown node type\n", stderr);
             break;
     }
+
+    sput_fail_if(count != expected_count, "Case b: Numbers of material node");
 }
