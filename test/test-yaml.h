@@ -36,10 +36,15 @@
 
 static void test_yaml();
 static void test_yaml_case_a();
+static void test_yaml_case_b();
+
+static void print_yaml_document(yaml_document_t *document);
+void print_yaml_node(yaml_document_t *document, yaml_node_t *node);
 
 static void test_yaml()
 {
     test_yaml_case_a();
+    test_yaml_case_b();
 }
 
 static void test_yaml_case_a()
@@ -60,15 +65,15 @@ static void test_yaml_case_a()
     yaml_parser_set_input_file(&parser, fp);
     
     int state = 0;
-    int found_id = 0;
+    int count_id = 0;
+    int expected_num_id = 3;
     char *tk;
     
     do {
         yaml_parser_scan(&parser, &token);
         switch(token.type) {
             case YAML_KEY_TOKEN:     
-                state = 0; 
-                found_id = 0;
+                state = 0;
                 break;
             case YAML_VALUE_TOKEN:   
                 state = 1; 
@@ -77,13 +82,9 @@ static void test_yaml_case_a()
                 tk = (char *)token.data.scalar.value;
                 if(state == 0) {
                     if(!strcmp(tk, "id")) {
-                        found_id = 1;
+                        count_id += 1;
                     }
-                } else {
-                    if(found_id == 1) {
-                        printf("Found id: %s\n", tk);                        
-                    }
-                }
+                } 
                 break;
            default: 
                break;
@@ -92,8 +93,87 @@ static void test_yaml_case_a()
             yaml_token_delete(&token);
         }
     } while(token.type != YAML_STREAM_END_TOKEN);
+        
+    sput_fail_if(count_id != expected_num_id, "Case a: Numbers of id");
     
     yaml_token_delete(&token);
     yaml_parser_delete(&parser);
     fclose(fp);
+}
+
+static void test_yaml_case_b()
+{
+    FILE *fp = fopen("../../test/test-yaml.yml", "r");
+    yaml_parser_t parser;
+    yaml_document_t document;
+
+    /* Initialize parser */
+    if(!yaml_parser_initialize(&parser)) {
+        fputs("Failed to initialize parser!\n", stderr);
+    }
+    if(fp == NULL) {
+        fputs("Failed to open file!\n", stderr);
+    }
+
+    /* Set input file */
+    yaml_parser_set_input_file(&parser, fp);
+    
+    int done = 0;
+    while (!done)
+    {
+        if (!yaml_parser_load(&parser, &document)) {
+            break;
+        }
+
+        done = (!yaml_document_get_root_node(&document));
+
+        if (!done)
+            print_yaml_document(&document);
+
+        yaml_document_delete(&document);
+    }
+    
+    yaml_parser_delete(&parser);
+    fclose(fp);
+}
+
+static void print_yaml_document(yaml_document_t *document)
+{
+    puts("NEW DOCUMENT");
+
+    print_yaml_node(document, yaml_document_get_root_node(document));
+
+    puts("END DOCUMENT");
+}
+
+void print_yaml_node(yaml_document_t *document, yaml_node_t *node)
+{
+    char *node_value;
+    yaml_node_t *material;
+    yaml_node_t *next_node_p;
+    
+    switch (node->type) {
+        case YAML_NO_NODE:
+            break;
+        case YAML_SCALAR_NODE:
+            break;
+        case YAML_SEQUENCE_NODE:
+            break;
+        case YAML_MAPPING_NODE:;
+            yaml_node_pair_t *i_node_p;
+            for(i_node_p = node->data.mapping.pairs.start; i_node_p < node->data.mapping.pairs.top; i_node_p++) {
+                next_node_p = yaml_document_get_node(document, i_node_p->key);
+                if(next_node_p) {
+                    node_value = (char *)next_node_p->data.scalar.value;
+                    if(!strcmp(node_value, "material")) {
+                        printf("material\n");
+                        material = next_node_p;
+                    }
+                }
+            }
+            break;
+        default:
+            fputs("Unknown node type\n", stderr);
+            break;
+    }
 }
