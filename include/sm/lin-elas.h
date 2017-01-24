@@ -33,9 +33,9 @@
 #include "yaml/yaml.h"
 
 struct lin_elas_mat {
-  int id;
-  double young_modulus;
-  double poisson;
+    int id;
+    double young_modulus;
+    double poisson;
 };
 
 typedef struct lin_elas_mat lin_elas_t;
